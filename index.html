@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Splitter - Split PDF Free, No Upload</title>
+    <link rel="icon" type="image/svg+xml" href="/pdf-splitter/static/icon.svg">
+    <link rel="shortcut icon" href="/pdf-splitter/static/icon.svg">
+    <meta name="description" content="Split PDF files for free. Extract pages, split by range, or save each page separately. No uploads, no account required.">
+    <link rel="manifest" href="/pdf-splitter/manifest.json">
+    <meta name="theme-color" content="#10b981">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="PDF Splitter">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+    <link rel="stylesheet" href="static/css/style.css">
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-custom">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center gap-2" href="https://xdrkzx1.github.io/pdf-tools-hub/">
+                <div class="brand-icon">
+                    <i class="bi bi-file-earmark-pdf-fill"></i>
+                </div>
+                <span class="brand-text">PDF<span class="brand-accent">Tools</span></span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center gap-1">
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://xdrkzx1.github.io/pdf-tools-hub/">
+                            <i class="bi bi-grid me-1"></i>All Tools
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://xdrkzx1.github.io/pdf-merger/">
+                            <i class="bi bi-file-earmark-zip me-1"></i>Merge
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://xdrkzx1.github.io/pdf-compressor/">
+                            <i class="bi bi-file-zip me-1"></i>Compress
+                        </a>
+                    </li>
+                    <li class="nav-item" id="swBadgeLi" style="display:none">
+                        <span class="sw-offline-badge"><i class="bi bi-cloud-check-fill me-1"></i>Offline Ready</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+
+    <!-- Hero -->
+    <section class="hero-section">
+        <div class="container text-center">
+            <div class="row justify-content-center">
+                <div class="col-lg-7">
+                    <div class="hero-badge mb-3">
+                        <i class="bi bi-shield-lock-fill me-2"></i>100% Private - No uploads ever
+                    </div>
+                    <h1 class="hero-title">Split PDF <span class="gradient-text">Instantly</span></h1>
+                    <p class="hero-subtitle">Extract pages, split by range, or save every page as a separate PDF - right in your browser, no uploads needed.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tool Section -->
+    <section class="tool-section py-4">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-9">
+
+                    <!-- Drop Zone -->
+                    <div class="upload-card mb-4" id="uploadCard">
+                        <div class="drop-zone" id="dropZone">
+                            <div class="drop-zone-inner">
+                                <div class="drop-icon"><i class="bi bi-cloud-arrow-up"></i></div>
+                                <h4 class="drop-title">Drag &amp; Drop a PDF here</h4>
+                                <p class="drop-subtitle">or click to browse</p>
+                                <label for="fileInput" class="btn btn-browse mt-2">
+                                    <i class="bi bi-folder2-open me-2"></i>Browse PDF
+                                </label>
+                                <input type="file" id="fileInput" accept=".pdf" hidden>
+                                <p class="drop-hint mt-3">One PDF at a time &bull; No file size limit &bull; Works offline</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Split Section (hidden until file loaded) -->
+                    <div id="splitSection" style="display:none">
+
+                        <!-- File Info Bar -->
+                        <div class="file-info-bar mb-3" id="fileInfoBar">
+                            <div class="d-flex align-items-center gap-3 flex-wrap">
+                                <i class="bi bi-file-earmark-pdf-fill file-info-icon"></i>
+                                <div class="flex-1">
+                                    <p class="file-info-name mb-0" id="fileName">document.pdf</p>
+                                    <p class="file-info-meta mb-0" id="fileMeta">Loading…</p>
+                                </div>
+                                <button class="btn-swap-file" id="swapFileBtn">
+                                    <i class="bi bi-arrow-repeat me-1"></i>Change file
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Split Mode Selector -->
+                        <div class="split-mode-row mb-4">
+                            <span class="quality-label">Split Mode:</span>
+                            <div class="quality-options">
+                                <button class="quality-btn active" data-mode="all" title="Save every page as a separate PDF">
+                                    <i class="bi bi-files me-1"></i>All Pages<br><small>One PDF each</small>
+                                </button>
+                                <button class="quality-btn" data-mode="range" title="Extract a specific range of pages">
+                                    <i class="bi bi-list-ol me-1"></i>By Range<br><small>e.g. 1-5, 8</small>
+                                </button>
+                                <button class="quality-btn" data-mode="select" title="Pick individual pages">
+                                    <i class="bi bi-hand-index-thumb me-1"></i>Select Pages<br><small>Click to pick</small>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Range input (shown in range mode) -->
+                        <div id="rangeInputWrap" class="range-input-wrap mb-4" style="display:none">
+                            <label class="quality-label mb-2 d-block">Page range:</label>
+                            <div class="d-flex align-items-center gap-2 flex-wrap">
+                                <input type="text" id="rangeInput" class="range-text-input" placeholder="e.g. 1-3, 5, 7-9">
+                                <span class="range-hint" id="rangeHint"></span>
+                            </div>
+                            <p class="text-muted small mt-1 mb-0">Separate ranges with commas. Each range becomes one PDF.</p>
+                        </div>
+
+                        <!-- Page Thumbnails (shown in select mode) -->
+                        <div id="thumbGrid" class="thumb-grid mb-4" style="display:none"></div>
+
+                        <!-- Action Bar -->
+                        <div class="action-bar" id="actionBar">
+                            <div class="split-progress-track" id="progressTrack">
+                                <div class="split-progress-fill" id="progressFill"></div>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                                <div>
+                                    <p class="action-summary" id="actionSummary">Loading…</p>
+                                    <p class="text-muted small mb-0"><i class="bi bi-info-circle me-1"></i>Each output is a valid, standalone PDF</p>
+                                </div>
+                                <div class="d-flex gap-2 flex-wrap align-items-center">
+                                    <button class="btn-clear" id="clearBtn"><i class="bi bi-trash me-1"></i>Clear</button>
+                                    <button class="btn-split" id="splitBtn" disabled>
+                                        <i class="bi bi-scissors me-2"></i>Split &amp; Download
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Info Section -->
+    <section class="info-section py-5">
+        <div class="container">
+            <div class="row g-4 justify-content-center">
+                <div class="col-sm-4">
+                    <div class="info-card text-center">
+                        <i class="bi bi-scissors info-icon text-success"></i>
+                        <h5>3 Split Modes</h5>
+                        <p>Split all pages, extract a range, or hand-pick exactly which pages you need.</p>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="info-card text-center">
+                        <i class="bi bi-grid-3x3-gap info-icon text-primary"></i>
+                        <h5>Visual Page Picker</h5>
+                        <p>See thumbnails of every page and click to select the ones you want to keep.</p>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="info-card text-center">
+                        <i class="bi bi-shield-lock-fill info-icon text-warning"></i>
+                        <h5>100% Private</h5>
+                        <p>Splitting happens locally. Files never leave your browser, ever.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Global Drop Overlay -->
+    <div id="globalDropOverlay" class="global-drop-overlay" aria-hidden="true">
+        <div class="global-drop-inner">
+            <i class="bi bi-cloud-arrow-up-fill"></i>
+            <h3>Drop PDF file anywhere</h3>
+            <p>Files are processed locally - nothing is uploaded</p>
+        </div>
+    </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row align-items-center py-3">
+                <div class="col-md-6 text-center text-md-start mb-2 mb-md-0">
+                    <p class="text-muted small mb-0">Files processed locally &bull; Zero uploads &bull; Free forever</p>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <a href="https://xdrkzx1.github.io/pdf-tools-hub/" class="footer-link me-3">All PDF Tools</a>
+                    <a href="https://xdrkzx1.github.io/pdf-merger/" class="footer-link me-3">Merge</a>
+                    <a href="https://xdrkzx1.github.io/pdf-compressor/" class="footer-link">Compress</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="static/js/main.js"></script>
+</body>
+</html>

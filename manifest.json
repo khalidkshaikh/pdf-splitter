@@ -1,0 +1,17 @@
+{
+  "name": "PDF Splitter - Split PDF Free",
+  "short_name": "PDF Split",
+  "start_url": "/pdf-splitter/",
+  "scope": "/pdf-splitter/",
+  "display": "standalone",
+  "background_color": "#0f0f1a",
+  "theme_color": "#10b981",
+  "icons": [
+    {
+      "src": "static/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
