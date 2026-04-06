@@ -423,3 +423,85 @@ main { flex: 1; }
     .btn-clear { width: 100%; justify-content: center; }
     .thumb-grid { grid-template-columns: repeat(auto-fill, minmax(75px, 1fr)); }
 }
+
+/* ── Author Footer ── */
+.footer-author-wrap {
+    border-top: 1px solid var(--border);
+    padding: 1.25rem 0 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.65rem;
+}
+.footer-author-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin: 0;
+}
+.footer-author-card {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.85rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 14px;
+    padding: 0.65rem 1rem;
+    backdrop-filter: blur(10px);
+    transition: var(--transition);
+}
+.footer-author-card:hover {
+    border-color: rgba(16, 185, 129, 0.25);
+    background: rgba(16, 185, 129, 0.05);
+}
+.footer-author-img {
+    width: 40px !important;
+    height: 40px !important;
+    min-width: 40px;
+    border-radius: 10px;
+    object-fit: cover;
+    border: 2px solid rgba(52, 211, 153, 0.4);
+    flex-shrink: 0;
+}
+.footer-author-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+}
+.footer-author-name {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    transition: color 0.2s;
+}
+.footer-author-name:hover { color: var(--accent-light); }
+.footer-author-title {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+}
+.footer-linkedin-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.35rem 0.85rem;
+    background: rgba(16, 185, 129, 0.15);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    border-radius: 8px;
+    color: var(--accent-light);
+    font-size: 0.75rem;
+    font-weight: 600;
+    transition: var(--transition);
+    white-space: nowrap;
+}
+.footer-linkedin-btn:hover {
+    background: rgba(16, 185, 129, 0.28);
+    color: var(--accent-light);
+}
+@media (max-width: 576px) {
+    .footer-author-card { flex-wrap: wrap; justify-content: center; }
+    .footer-author-info { text-align: center; flex: 1 1 100%; }
+    .footer-author-name, .footer-author-title { display: block; text-align: center; }
+    .footer-linkedin-btn { width: 100%; justify-content: center; }
+}
